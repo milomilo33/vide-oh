@@ -46,3 +46,4 @@ Komponente sistema su sledeće:
 - Upravljanje brzinom reprodukcije videa 
 - Neki jednostavniji video editing prilikom uploadovanja
 - Download videa
+- ...
