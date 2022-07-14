@@ -41,6 +41,7 @@ Komponente sistema su sledeće:
 # Potencijalna proširenja za diplomski rad
 - HTTPS
 - Docker + deployment
+- OAuth2
 - Još jedan mikroservis koji podrazumeva dodavanje novog tipa korisnika (tehnička podrška) sa kojim će korisnici moći da četuju u slučaju da im je potrebna podrška (implementacija upotrebom WebSocket-a). Takođe, potencijalno može da se implementira chatbot za ove svrhe
 - Provera prisustva neprikladnog sadržaja u videima pre nego što postanu dostupni za pregled uz pomoć algoritama mašinskog učenja
 - Upravljanje brzinom reprodukcije videa 
