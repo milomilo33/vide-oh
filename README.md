@@ -34,16 +34,17 @@ Administrator:
 Sistem se oslanja na mikroservisnu arhitekturu.
 Komponente sistema su sledeće:
 - Mikroservis za korisnike (autentifikacija, autorizacija, dodavanje i izmena korisnika, blokiranje korisnika...). Tehnologije: Go i PostgreSQL.
-- Mikroservis za videe (CRUD videa, video streaming, pretraga videa...). Tehnologije: Python (Flask ili Django) i PostgreSQL (za podatke o videima).
+- Mikroservis za videe (CRUD videa, video streaming, pretraga videa...). Tehnologije: Python (Flask, Django ili FastAPI) i PostgreSQL (za podatke o videima).
 - Mikroservis za komentare i ocene. Tehnologije: Go ili Rust i PostgreSQL.
 - Centralna klijentska, frontend aplikacija koja podržava funkcionalnosti svih mikroservisa. Tehnologije: Vue.js.
 
 # Potencijalna proširenja za diplomski rad
 - HTTPS
-- Docker
+- Docker + deployment
 - Još jedan mikroservis koji podrazumeva dodavanje novog tipa korisnika (tehnička podrška) sa kojim će korisnici moći da četuju u slučaju da im je potrebna podrška (implementacija upotrebom WebSocket-a). Takođe, potencijalno može da se implementira chatbot za ove svrhe
 - Provera prisustva neprikladnog sadržaja u videima pre nego što postanu dostupni za pregled uz pomoć algoritama mašinskog učenja
 - Upravljanje brzinom reprodukcije videa 
 - Neki jednostavniji video editing prilikom uploadovanja
 - Download videa
+- Kompresija/optimizacija streaming procesa
 - ...
