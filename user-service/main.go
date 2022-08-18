@@ -5,6 +5,7 @@ import (
 	"user-service/controllers"
 	"user-service/database"
 	"user-service/middleware"
+	"user-service/models"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,6 +16,17 @@ func main() {
 	// Initialize Database
 	database.Connect("postgresql://localhost/vide-oh-users?user=postgres&password=root")
 	database.Migrate()
+
+	// Initial Data
+	user := &models.User{
+		Name:     "Admin Adminsky",
+		Email:    "admin@admin.com",
+		Password: "123",
+		Role:     models.Administrator,
+		Blocked:  false,
+	}
+	user.HashPassword(user.Password)
+	database.Instance.Save(&user)
 
 	// Initialize Router
 	router := initRouter()
@@ -30,6 +42,8 @@ func initRouter() *gin.Engine {
 		secured := api.Group("/secured").Use(middleware.Auth())
 		{
 			secured.GET("/ping", controllers.Ping)
+			secured.GET("/user/all-registered")
+			secured.GET("/block/:id", controllers.BlockUser)
 		}
 	}
 	return router

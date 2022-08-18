@@ -31,6 +31,7 @@ type User struct {
 	Email    string   `json:"email" gorm:"unique;not-null"`
 	Password string   `json:"password" gorm:"not null"`
 	Role     UserRole `json:"userRole" gorm:"not null"`
+	Blocked  bool     `json:"blocked" gorm:"default:false"`
 }
 
 func (user *User) HashPassword(password string) error {

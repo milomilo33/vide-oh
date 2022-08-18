@@ -29,7 +29,7 @@ func GenerateJWT(email string, role string) (tokenString string, err error) {
 	return
 }
 
-func ValidateToken(signedToken string) (err error) {
+func ValidateToken(signedToken string) (err error, jwtClaims JWTClaim) {
 	token, err := jwt.ParseWithClaims(
 		signedToken,
 		&JWTClaim{},
@@ -52,6 +52,8 @@ func ValidateToken(signedToken string) (err error) {
 		err = errors.New("token expired")
 		return
 	}
+
+	jwtClaims = *claims
 
 	return
 
