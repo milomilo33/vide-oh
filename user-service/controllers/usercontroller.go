@@ -53,5 +53,7 @@ func BlockUser(context *gin.Context) {
 
 	database.Instance.Save(&user)
 
+	utils.SendBlockedMail(user.Email)
+
 	context.Status(http.StatusOK)
 }

@@ -28,9 +28,19 @@ func main() {
 	user.HashPassword(user.Password)
 	database.Instance.Save(&user)
 
+	user2 := &models.User{
+		Name:     "User Usersky",
+		Email:    "shockwave1337yolo@gmail.com",
+		Password: "123",
+		Role:     models.RegisteredUser,
+		Blocked:  false,
+	}
+	user2.HashPassword(user2.Password)
+	database.Instance.Save(&user2)
+
 	// Initialize Router
 	router := initRouter()
-	router.Run(":8080")
+	router.Run(":8081")
 }
 
 func initRouter() *gin.Engine {
@@ -42,8 +52,10 @@ func initRouter() *gin.Engine {
 		secured := api.Group("/secured").Use(middleware.Auth())
 		{
 			secured.GET("/ping", controllers.Ping)
-			secured.GET("/user/all-registered")
+			secured.GET("/user/all-registered") // only admin
 			secured.GET("/block/:id", controllers.BlockUser)
+			secured.GET("/user/:id")
+			secured.GET("/user/current")
 		}
 	}
 	return router
