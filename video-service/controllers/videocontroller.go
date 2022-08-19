@@ -6,6 +6,9 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"video-service/database"
+	"video-service/models"
+	"video-service/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -69,6 +72,33 @@ func StreamVideo(context *gin.Context) {
 	context.Data(206, "video/mp4", data)
 }
 
-func TestClaims(context *gin.Context) {
+func ReportVideo(context *gin.Context) {
+	videoId := context.Param("id")
+	var video models.Video
 
+	if err := database.Instance.First(&video, videoId).Error; err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		context.Abort()
+		return
+	}
+
+	video.Reported = true
+
+	database.Instance.Save(&video)
+
+	context.Status(http.StatusOK)
+}
+
+func GetAllReportedVideos(context *gin.Context) {
+	_, claims := utils.GetTokenClaims(context)
+	if claims.Role != "Administrator" {
+		context.JSON(401, gin.H{"error": "unauthorized role"})
+		context.Abort()
+		return
+	}
+
+	var videos []models.Video
+	database.Instance.Where("reported = ?", true).Find(&videos)
+
+	context.JSON(http.StatusOK, videos)
 }
