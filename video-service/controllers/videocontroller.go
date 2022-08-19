@@ -112,12 +112,12 @@ func GetAllReportedVideos(context *gin.Context) {
 }
 
 func UploadVideo(c *gin.Context) {
-	// _, claims := utils.GetTokenClaims(c)
-	// if claims.Role != "RegisteredUser" {
-	// 	c.JSON(401, gin.H{"error": "unauthorized role"})
-	// 	c.Abort()
-	// 	return
-	// }
+	_, claims := utils.GetTokenClaims(c)
+	if claims.Role != "RegisteredUser" {
+		c.JSON(401, gin.H{"error": "unauthorized role"})
+		c.Abort()
+		return
+	}
 
 	// single file
 	file, _ := c.FormFile("file")
@@ -134,6 +134,15 @@ func UploadVideo(c *gin.Context) {
 	rndNum := rand.Intn(math.MaxInt32-0) + 0
 	filenameNoExt := strconv.Itoa(rndNum)
 	file.Filename = filenameNoExt + ".mp4"
+
+	// create record for video in db
+	video := &models.Video{ // pb == &Student{"Bob", 8}
+		Title:       c.Query("title"),
+		Description: c.Query("description"),
+		OwnerEmail:  claims.Email,
+		Filename:    filenameNoExt,
+	}
+	database.Instance.Save(&video)
 
 	// Upload the file to specific dst.
 	// wd, err := os.Getwd()
@@ -199,4 +208,26 @@ func generateVideoThumbnail(url string) *os.File {
 
 	outputFile, _ := os.Open(outputFilePath)
 	return outputFile
+}
+
+func DeleteVideo(context *gin.Context) {
+	videoId := context.Param("id")
+	var video models.Video
+
+	if err := database.Instance.First(&video, videoId).Error; err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		context.Abort()
+		return
+	}
+
+	_, claims := utils.GetTokenClaims(context)
+	if claims.Role == "RegisteredUser" && claims.Email != video.OwnerEmail {
+		context.JSON(401, gin.H{"error": "you are not authorized to delete this video"})
+		context.Abort()
+		return
+	}
+
+	database.Instance.Delete(&models.Video{}, videoId)
+
+	context.Status(http.StatusOK)
 }
