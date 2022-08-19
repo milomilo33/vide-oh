@@ -5,6 +5,7 @@ import (
 
 	"video-service/controllers"
 	"video-service/database"
+	"video-service/middleware"
 	"video-service/models"
 
 	"github.com/gin-gonic/gin"
@@ -33,9 +34,14 @@ func main() {
 
 func initRouter() *gin.Engine {
 	router := gin.Default()
+	router.Static("/static", "./static")
 	api := router.Group("/api")
 	{
 		api.GET("/video-stream/:name", controllers.StreamVideo)
+		secured := api.Group("/secured").Use(middleware.Auth())
+		{
+			secured.GET("/ping")
+		}
 	}
 	return router
 }
