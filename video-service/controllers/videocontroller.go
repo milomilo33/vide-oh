@@ -2,10 +2,13 @@ package controllers
 
 import (
 	"fmt"
+	"math"
+	"math/rand"
 	"net/http"
 	"os"
 	"strconv"
 	"strings"
+	"time"
 	"video-service/database"
 	"video-service/models"
 	"video-service/utils"
@@ -101,4 +104,28 @@ func GetAllReportedVideos(context *gin.Context) {
 	database.Instance.Where("reported = ?", true).Find(&videos)
 
 	context.JSON(http.StatusOK, videos)
+}
+
+func UploadVideo(c *gin.Context) {
+	// single file
+	file, _ := c.FormFile("file")
+	fmt.Println(file.Filename)
+
+	// generate random number for filename
+	rand.Seed(time.Now().UnixNano())
+	rndNum := rand.Intn(math.MaxInt32-0) + 0
+	file.Filename = strconv.Itoa(rndNum) + ".mp4"
+
+	// Upload the file to specific dst.
+	// wd, err := os.Getwd()
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// parent := filepath.Dir(wd)
+	err := c.SaveUploadedFile(file, "static/"+file.Filename)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	c.String(http.StatusOK, fmt.Sprintf("'%s' uploaded!", file.Filename))
 }
