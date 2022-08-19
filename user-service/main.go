@@ -30,7 +30,7 @@ func main() {
 
 	user2 := &models.User{
 		Name:     "User Usersky",
-		Email:    "shockwave1337yolo@gmail.com",
+		Email:    "user@user.com",
 		Password: "123",
 		Role:     models.RegisteredUser,
 		Blocked:  false,
@@ -52,10 +52,10 @@ func initRouter() *gin.Engine {
 		secured := api.Group("/secured").Use(middleware.Auth())
 		{
 			secured.GET("/ping", controllers.Ping)
-			secured.GET("/user/all-registered") // only admin
-			secured.GET("/block/:id", controllers.BlockUser)
-			secured.GET("/user/:id")
-			secured.GET("/user/current")
+			secured.GET("/user/all-registered", controllers.GetAllRegisteredUsers) // only admin
+			secured.GET("/block/:id", controllers.BlockUser)                       // only admin
+			secured.GET("/user/:id", controllers.GetUserById)
+			secured.GET("/user/current", controllers.GetCurrentUser)
 		}
 	}
 	return router

@@ -57,3 +57,47 @@ func BlockUser(context *gin.Context) {
 
 	context.Status(http.StatusOK)
 }
+
+func GetAllRegisteredUsers(context *gin.Context) {
+	_, claims := utils.GetTokenClaims(context)
+	if claims.Role != models.Administrator.String() {
+		context.JSON(401, gin.H{"error": "unauthorized role"})
+		context.Abort()
+		return
+	}
+
+	var users []models.User
+	database.Instance.Where("role = ?", models.RegisteredUser).Find(&users)
+
+	context.JSON(http.StatusOK, users)
+}
+
+func GetUserById(context *gin.Context) {
+	// // RBAC
+	// _, claims := utils.GetTokenClaims(context)
+	// if claims.Role != models.Administrator.String() {
+	// 	context.JSON(401, gin.H{"error": "unauthorized role"})
+	// 	context.Abort()
+	// 	return
+	// }
+
+	userId := context.Param("id")
+	var user models.User
+
+	if err := database.Instance.First(&user, userId).Error; err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		context.Abort()
+		return
+	}
+
+	context.JSON(http.StatusOK, user)
+}
+
+func GetCurrentUser(context *gin.Context) {
+	_, claims := utils.GetTokenClaims(context)
+
+	var user models.User
+	database.Instance.Where("email = ?", claims.Email).First(&user)
+
+	context.JSON(http.StatusOK, user)
+}
