@@ -2,10 +2,15 @@ package controllers
 
 import (
 	"fmt"
+	"io"
+	"io/ioutil"
+	"log"
 	"math"
 	"math/rand"
 	"net/http"
 	"os"
+	"os/exec"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -107,14 +112,28 @@ func GetAllReportedVideos(context *gin.Context) {
 }
 
 func UploadVideo(c *gin.Context) {
+	// _, claims := utils.GetTokenClaims(c)
+	// if claims.Role != "RegisteredUser" {
+	// 	c.JSON(401, gin.H{"error": "unauthorized role"})
+	// 	c.Abort()
+	// 	return
+	// }
+
 	// single file
 	file, _ := c.FormFile("file")
 	fmt.Println(file.Filename)
 
+	if filepath.Ext(file.Filename) != ".mp4" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid extension"})
+		c.Abort()
+		return
+	}
+
 	// generate random number for filename
 	rand.Seed(time.Now().UnixNano())
 	rndNum := rand.Intn(math.MaxInt32-0) + 0
-	file.Filename = strconv.Itoa(rndNum) + ".mp4"
+	filenameNoExt := strconv.Itoa(rndNum)
+	file.Filename = filenameNoExt + ".mp4"
 
 	// Upload the file to specific dst.
 	// wd, err := os.Getwd()
@@ -127,5 +146,57 @@ func UploadVideo(c *gin.Context) {
 		fmt.Println(err.Error())
 	}
 
+	// generate thumbnail and save it to /static
+	wd, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+	videoFullPath := wd + "/static/" + file.Filename
+	thumbnailOutputFile := generateVideoThumbnail(videoFullPath)
+	thumbnailDst, err := os.Create("static/" + filenameNoExt + ".jpg")
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "cannot create thumbnail file"})
+		c.Abort()
+		return
+	}
+	defer thumbnailDst.Close()
+	io.Copy(thumbnailDst, thumbnailOutputFile)
+	thumbnailOutputFile.Close()
+
 	c.String(http.StatusOK, fmt.Sprintf("'%s' uploaded!", file.Filename))
+}
+
+func generateVideoThumbnail(url string) *os.File {
+	tempDir, err := ioutil.TempDir("", "thumbnail*")
+	if err != nil {
+		panic(err)
+	}
+
+	outputFilePath := tempDir + "/thumbnail.png"
+
+	cmd := `ffmpeg -i "%s" -an -q 0 -vf scale="'if(gt(iw,ih),-1,200):if(gt(iw,ih),200,-1)', crop=200:200:exact=1" -vframes 1 "%s"`
+	// ffmpeg cmd ref : https://gist.github.com/TimothyRHuertas/b22e1a252447ab97aa0f8de7c65f96b8
+
+	cmdSubstituted := fmt.Sprintf(cmd, url, outputFilePath)
+
+	// shellName := "ash" // for docker (using alpine image)
+	// if os.Getenv("ENV") != "" && os.Getenv("ENV") == "LOCAL" {
+	// 	shellName = "bash"
+	// }
+	shellName := "bash"
+
+	ffCmd := exec.Command(shellName, "-c", cmdSubstituted)
+
+	// getting real error msg : https://stackoverflow.com/questions/18159704/how-to-debug-exit-status-1-error-when-running-exec-command-in-golang
+	output, err := ffCmd.CombinedOutput()
+	if err != nil {
+		log.Println(fmt.Sprint(err) + ": " + string(output))
+		if err != nil {
+			panic(err)
+		}
+	}
+	log.Println(string(output))
+
+	outputFile, _ := os.Open(outputFilePath)
+	return outputFile
 }
