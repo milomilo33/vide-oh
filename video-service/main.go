@@ -40,7 +40,7 @@ func initRouter() *gin.Engine {
 	{
 		api.GET("/video-stream/:name", controllers.StreamVideo)
 		api.GET("/report-video/:id", controllers.ReportVideo)
-		api.GET("/search-videos")
+		api.GET("/search-videos", controllers.SearchVideos)
 		secured := api.Group("/secured").Use(middleware.Auth())
 		{
 			secured.GET("/ping")

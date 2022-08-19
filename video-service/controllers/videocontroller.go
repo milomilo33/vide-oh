@@ -231,3 +231,18 @@ func DeleteVideo(context *gin.Context) {
 
 	context.Status(http.StatusOK)
 }
+
+func SearchVideos(context *gin.Context) {
+	var videos []models.Video
+	searchQuery := context.Query("query")
+	if searchQuery == "" {
+		database.Instance.Find(&videos)
+		context.JSON(http.StatusOK, videos)
+		context.Abort()
+		return
+	}
+
+	searchQuery = "%" + strings.ToLower(searchQuery) + "%"
+	database.Instance.Where("lower(title) LIKE ?", searchQuery).Or("lower(description) LIKE ?", searchQuery).Or("owner_email LIKE ?", searchQuery).Find(&videos)
+	context.JSON(http.StatusOK, videos)
+}
