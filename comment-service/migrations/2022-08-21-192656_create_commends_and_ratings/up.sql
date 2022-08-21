@@ -9,9 +9,9 @@ CREATE TABLE comments (
 );
 
 CREATE TABLE ratings (
-  id SERIAL PRIMARY KEY,
-  owner_email VARCHAR NOT NULL,
+  rating_id SERIAL PRIMARY KEY,
+  rating_owner_email VARCHAR NOT NULL,
   rating INTEGER NOT NULL,
-  video_id INTEGER NOT NULL,
+  rating_video_id INTEGER NOT NULL,
   CHECK (rating BETWEEN 1 AND 5)
 );

@@ -25,7 +25,7 @@ pub fn show_all_comments_for_video(video_id_provided: i32, connection: &PgConnec
 }
 
 pub fn show_all_reported_comments(connection: &PgConnection) -> QueryResult<Vec<Comment>>  {
-    comments.filter(video_id.eq(video_id_provided))
+    comments.filter(reported.eq(true))
         .load::<Comment>(&*connection)
 }
 
@@ -38,4 +38,37 @@ pub fn report_comment(comment_id: i32, connection: &PgConnection) -> QueryResult
     diesel::update(comments::table.find(comment_id))
         .set(reported.eq(true))
         .get_result(connection)
+}
+
+pub fn create_or_update_rating(new_rating: NewRating, conn: &PgConnection) -> QueryResult<Rating> {
+    match ratings.filter(rating_owner_email.eq(new_rating.rating_owner_email))
+        .filter(rating_video_id.eq(new_rating.rating_video_id))
+        .select(rating_id)
+        .first::<Rating>(&*connection) {
+            Ok(found_rating_id) => {
+                diesel::update(ratings::table.find(found_rating_id))
+                .set(rating.eq(new_rating.rating))
+                .get_result(conn)
+            },
+            Err(_) => {
+                diesel::insert_into(ratings::table)
+                .values(&new_rating)
+                .get_result(conn)
+            }
+        };
+}
+
+pub fn get_rating_for_video(video_id_provided: i32, connection: &PgConnection) -> Result<f32> {
+    match ratings.filter(rating_video_id.eq(video_id_provided))
+        .select(rating)
+        .load::<Vec<i32>>(&*connection) {
+            Ok(ratings) => {
+                let mut rating_sum = 0;
+                for a_rating in ratings.iter() {
+                    rating_sum += a_rating;
+                }
+                rating_sum / ratings.len()
+            },
+            Err(err) => Err(err)
+        };
 }
