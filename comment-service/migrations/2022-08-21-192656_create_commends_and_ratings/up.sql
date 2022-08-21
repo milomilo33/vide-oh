@@ -1,0 +1,17 @@
+-- Your SQL goes here
+CREATE TABLE comments (
+  id SERIAL PRIMARY KEY,
+  owner_email VARCHAR NOT NULL,
+  body TEXT NOT NULL,
+  reported BOOLEAN NOT NULL DEFAULT 'f',
+  video_id INTEGER NOT NULL,
+  posted_at TIMESTAMP NOT NULL
+);
+
+CREATE TABLE ratings (
+  id SERIAL PRIMARY KEY,
+  owner_email VARCHAR NOT NULL,
+  rating INTEGER NOT NULL,
+  video_id INTEGER NOT NULL,
+  CHECK (rating BETWEEN 1 AND 5)
+);
