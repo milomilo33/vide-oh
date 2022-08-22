@@ -1,4 +1,9 @@
-use chrono::DateTime;
+#![allow(proc_macro_derive_resolution_fallback)]
+
+use crate::schema::comments;
+use crate::schema::ratings;
+
+use chrono::NaiveDateTime;
 
 #[derive(Queryable, AsChangeset, Serialize, Deserialize, Debug, Insertable)]
 #[table_name = "comments"]
@@ -8,7 +13,7 @@ pub struct Comment {
     pub body: String,
     pub reported: bool,
     pub video_id: i32,
-    pub posted_at: DateTime,
+    pub posted_at: NaiveDateTime,
 }
 
 #[derive(Insertable, Serialize, Deserialize)]
@@ -18,7 +23,7 @@ pub struct NewComment {
     pub body: String,
     pub reported: bool,
     pub video_id: i32,
-    pub posted_at: DateTime,
+    pub posted_at: NaiveDateTime,
 }
 
 #[derive(Queryable, AsChangeset, Serialize, Deserialize, Debug, Insertable)]

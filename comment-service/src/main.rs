@@ -1,13 +1,23 @@
-#[macro_use] extern crate rocket;
+#![feature(decl_macro, proc_macro_hygiene)]
+#[macro_use]
+extern crate diesel;
+extern crate dotenv;
+extern crate r2d2;
+extern crate r2d2_diesel;
+#[macro_use]
+extern crate rocket;
+// extern crate rocket_contrib;
+#[macro_use]
+extern crate serde_derive;
 
-#[get("/")]
-fn index() -> &'static str {
-    "Hello, world!"
-}
+use dotenv::dotenv;
 
-#[launch]
-fn rocket() -> _ {
-    let rocket = rocket::build();
-    
-    rocket.mount("/", routes![index])
+mod schema;
+mod connection;
+mod models;
+mod repository;
+
+fn main() {
+    dotenv().ok();
+    // sample::router::create_routes();
 }

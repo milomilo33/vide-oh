@@ -10,11 +10,11 @@ table! {
 }
 
 table! {
-    ratings (id) {
-        id -> Int4,
-        owner_email -> Varchar,
+    ratings (rating_id) {
+        rating_id -> Int4,
+        rating_owner_email -> Varchar,
         rating -> Int4,
-        video_id -> Int4,
+        rating_video_id -> Int4,
     }
 }
 

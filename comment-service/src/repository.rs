@@ -41,10 +41,10 @@ pub fn report_comment(comment_id: i32, connection: &PgConnection) -> QueryResult
 }
 
 pub fn create_or_update_rating(new_rating: NewRating, conn: &PgConnection) -> QueryResult<Rating> {
-    match ratings.filter(rating_owner_email.eq(new_rating.rating_owner_email))
-        .filter(rating_video_id.eq(new_rating.rating_video_id))
+    match ratings.filter(rating_owner_email.eq(&new_rating.rating_owner_email))
+        .filter(rating_video_id.eq(&new_rating.rating_video_id))
         .select(rating_id)
-        .first::<Rating>(&*connection) {
+        .first::<i32>(&*conn) {
             Ok(found_rating_id) => {
                 diesel::update(ratings::table.find(found_rating_id))
                 .set(rating.eq(new_rating.rating))
@@ -55,20 +55,20 @@ pub fn create_or_update_rating(new_rating: NewRating, conn: &PgConnection) -> Qu
                 .values(&new_rating)
                 .get_result(conn)
             }
-        };
+        }
 }
 
-pub fn get_rating_for_video(video_id_provided: i32, connection: &PgConnection) -> Result<f32> {
+pub fn get_rating_for_video(video_id_provided: i32, connection: &PgConnection) -> QueryResult<f32> {
     match ratings.filter(rating_video_id.eq(video_id_provided))
         .select(rating)
-        .load::<Vec<i32>>(&*connection) {
-            Ok(ratings) => {
+        .load::<i32>(&*connection) {
+            Ok(ratings_vec) => {
                 let mut rating_sum = 0;
-                for a_rating in ratings.iter() {
+                for a_rating in ratings_vec.iter() {
                     rating_sum += a_rating;
                 }
-                rating_sum / ratings.len()
+                Ok(rating_sum as f32 / ratings_vec.len() as f32)
             },
             Err(err) => Err(err)
-        };
+        }
 }
