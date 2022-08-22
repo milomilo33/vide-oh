@@ -76,3 +76,10 @@ pub fn create_or_update_rating(new_rating: Json<NewRating>, connection: DbConn, 
         .map(|_| Status::Ok)
         .map_err(|_| Status::BadRequest)
 }
+
+#[get("/ratings/total/<video_id>")]
+pub fn get_rating_for_video(video_id: i32, connection: DbConn, my_claims: MyJWTClaims) -> Result<Json<f32>, Status> {
+    repository::get_rating_for_video(video_id, &connection)
+        .map(|rat| Json(rat))
+        .map_err(|_| Status::NotFound)
+}

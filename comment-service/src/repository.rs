@@ -69,6 +69,10 @@ pub fn get_rating_for_video(video_id_provided: i32, connection: &PgConnection) -
         .select(rating)
         .load::<i32>(&*connection) {
             Ok(ratings_vec) => {
+                if ratings_vec.len() == 0 {
+                    return Ok(0.0);
+                }
+
                 let mut rating_sum = 0;
                 for a_rating in ratings_vec.iter() {
                     rating_sum += a_rating;
