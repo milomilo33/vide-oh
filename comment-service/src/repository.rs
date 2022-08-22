@@ -56,6 +56,7 @@ pub fn create_or_update_rating(new_rating: NewRating, conn: &PgConnection) -> Qu
                 .get_result(conn)
             },
             Err(_) => {
+                println!("i get here!");
                 diesel::insert_into(ratings::table)
                 .values(&new_rating)
                 .get_result(conn)

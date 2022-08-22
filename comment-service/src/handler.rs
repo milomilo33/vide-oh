@@ -22,8 +22,11 @@ pub fn show_all_comments_for_video(video_id: i32, connection: DbConn, my_claims:
 }
 
 #[post("/comments", format ="application/json", data = "<new_comment>")]
-pub fn create_comment(new_comment: Json<NewComment>, connection: DbConn) ->  Result<Status, Status> {
-    println!("here 0 {}",&new_comment.body);
+pub fn create_comment(new_comment: Json<NewComment>, connection: DbConn, my_claims: MyJWTClaims) ->  Result<Status, Status> {
+    if !my_claims.email.eq(&new_comment.owner_email) {
+        return Err(Status::Unauthorized);
+    }
+
     repository::create_comment(new_comment.into_inner(), &connection)
         .map(|_| Status::Ok)
         .map_err(|_| Status::BadRequest)
@@ -61,4 +64,15 @@ pub fn report_comment(comment_id: i32, connection: DbConn, my_claims: MyJWTClaim
     repository::report_comment(comment_id, &connection)
         .map(|_| Status::Ok)
         .map_err(|_| Status::NotFound)
+}
+
+#[post("/ratings", format ="application/json", data = "<new_rating>")]
+pub fn create_or_update_rating(new_rating: Json<NewRating>, connection: DbConn, my_claims: MyJWTClaims) ->  Result<Status, Status> {
+    if !my_claims.email.eq(&new_rating.rating_owner_email) {
+        return Err(Status::Unauthorized);
+    }
+
+    repository::create_or_update_rating(new_rating.into_inner(), &connection)
+        .map(|_| Status::Ok)
+        .map_err(|_| Status::BadRequest)
 }

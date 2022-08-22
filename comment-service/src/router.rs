@@ -13,6 +13,7 @@ pub fn create_routes() {
                     handler::show_all_reported_comments,
                     handler::delete_comment,
                     handler::report_comment,
+                    handler::create_or_update_rating,
                     ],
         ).launch();
 }
