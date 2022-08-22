@@ -18,6 +18,7 @@ mod models;
 mod repository;
 mod handler;
 mod router;
+mod auth;
 
 fn main() {
     dotenv().ok();
