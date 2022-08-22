@@ -13,6 +13,11 @@ use crate::schema::comments::dsl::*;
 use crate::schema::ratings;
 use crate::schema::ratings::dsl::*;
 
+pub fn get_comment(comment_id: i32, connection: &PgConnection) -> QueryResult<Comment> {
+    comments::table.find(comment_id)
+        .first(&*connection)
+}
+
 pub fn create_comment(new_comment: NewComment, conn: &PgConnection) -> QueryResult<Comment> {
     diesel::insert_into(comments::table)
         .values(&new_comment)

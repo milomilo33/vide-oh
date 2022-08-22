@@ -10,6 +10,8 @@ pub fn create_routes() {
                routes![
                     handler::show_all_comments_for_video,
                     handler::create_comment,
+                    handler::show_all_reported_comments,
+                    handler::delete_comment,
                     ],
         ).launch();
 }
