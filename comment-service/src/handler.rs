@@ -56,23 +56,9 @@ pub fn delete_comment(comment_id: i32, connection: DbConn, my_claims: MyJWTClaim
     }
 }
 
-// #[get("/<id>")]
-// pub fn get_post(id: i32, connection: DbConn) -> Result<Json<Post>, Status> {
-//     sample::repository::get_post(id, &connection)
-//         .map(|post| Json(post))
-//         .map_err(|error| error_status(error))
-// }
-
-// #[put("/<id>", format = "application/json", data = "<post>")]
-// pub fn update_post(id: i32, post: Json<Post>, connection: DbConn) -> Result<Json<Post>, Status> {
-//     sample::repository::update_post(id, post.into_inner(), &connection)
-//         .map(|post| Json(post))
-//         .map_err(|error| error_status(error))
-// }
-
-// fn error_status(error: Error) -> Status {
-//     match error {
-//         Error::NotFound => Status::NotFound,
-//         _ => Status::InternalServerError
-//     }
-// }
+#[get("/comments/report/<comment_id>")]
+pub fn report_comment(comment_id: i32, connection: DbConn, my_claims: MyJWTClaims) -> Result<Status, Status> {
+    repository::report_comment(comment_id, &connection)
+        .map(|_| Status::Ok)
+        .map_err(|_| Status::NotFound)
+}
