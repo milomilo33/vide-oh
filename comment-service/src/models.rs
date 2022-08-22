@@ -21,9 +21,7 @@ pub struct Comment {
 pub struct NewComment {
     pub owner_email: String,
     pub body: String,
-    pub reported: bool,
     pub video_id: i32,
-    pub posted_at: NaiveDateTime,
 }
 
 #[derive(Queryable, AsChangeset, Serialize, Deserialize, Debug, Insertable)]

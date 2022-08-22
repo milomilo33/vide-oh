@@ -6,7 +6,7 @@ extern crate r2d2;
 extern crate r2d2_diesel;
 #[macro_use]
 extern crate rocket;
-// extern crate rocket_contrib;
+extern crate rocket_contrib;
 #[macro_use]
 extern crate serde_derive;
 
@@ -16,8 +16,10 @@ mod schema;
 mod connection;
 mod models;
 mod repository;
+mod handler;
+mod router;
 
 fn main() {
     dotenv().ok();
-    // sample::router::create_routes();
+    router::create_routes();
 }

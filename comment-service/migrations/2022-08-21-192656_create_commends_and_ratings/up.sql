@@ -5,7 +5,7 @@ CREATE TABLE comments (
   body TEXT NOT NULL,
   reported BOOLEAN NOT NULL DEFAULT 'f',
   video_id INTEGER NOT NULL,
-  posted_at TIMESTAMP NOT NULL
+  posted_at TIMESTAMP NOT NULL DEFAULT current_timestamp
 );
 
 CREATE TABLE ratings (
