@@ -3,6 +3,9 @@ import VueRouter from 'vue-router'
 
 import Login from '../views/Login'
 import Logout from '../views/Logout'
+import UnregisteredPage from '../views/UnregisteredPage'
+
+import Register from '../components/Register'
 
 Vue.use(VueRouter)
 
@@ -12,18 +15,18 @@ const Role = {
 }
 
 const routes = [
-	// {
-	// 	path: "/",
-	// 	name: UnregisteredPage,
-	// 	component: UnregisteredPage,
-	// 	children: [
-	// 		{
-	// 			path: "CreateCSR",
-	// 			name: "CreateCSRUnregistered",
-	// 			component: CreateCSR,
-	// 		}
-	// 	]
-	// },
+	{
+		path: "/",
+		name: UnregisteredPage,
+		component: UnregisteredPage,
+		children: [
+			{
+				path: "Register",
+				name: "Register",
+				component: Register,
+			}
+		]
+	},
 	{
 		path: "/Login",
 		name: "Login",
