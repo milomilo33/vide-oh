@@ -45,7 +45,7 @@ func main() {
 
 func initRouter() *gin.Engine {
 	router := gin.Default()
-	api := router.Group("/api")
+	api := router.Group("/api/users")
 	{
 		api.POST("/login", controllers.Login)
 		api.POST("/user/register", controllers.RegisterUser)

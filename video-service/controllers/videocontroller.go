@@ -136,7 +136,7 @@ func UploadVideo(c *gin.Context) {
 	file.Filename = filenameNoExt + ".mp4"
 
 	// create record for video in db
-	video := &models.Video{ // pb == &Student{"Bob", 8}
+	video := &models.Video{
 		Title:       c.Query("title"),
 		Description: c.Query("description"),
 		OwnerEmail:  claims.Email,

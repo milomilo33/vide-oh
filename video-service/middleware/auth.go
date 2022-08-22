@@ -9,7 +9,7 @@ import (
 
 func Auth() gin.HandlerFunc {
 	return func(context *gin.Context) {
-		requestURL := "http://localhost:8081/api/secured/ping"
+		requestURL := "http://localhost:8081/api/users/secured/ping"
 		req, err := http.NewRequest(http.MethodGet, requestURL, nil)
 		if err != nil {
 			fmt.Printf("auth client: could not create request: %s\n", err)

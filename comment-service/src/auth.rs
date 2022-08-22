@@ -23,7 +23,7 @@ impl<'a, 'r> FromRequest<'a, 'r> for MyJWTClaims {
             0 => Outcome::Failure((Status::Unauthorized, ())),
             1 => { 
                 let client = reqwest::blocking::Client::new();
-                let req = client.get("http://localhost:8081/api/secured/ping")
+                let req = client.get("http://localhost:8081/api/users/secured/ping")
                                                 .header("Authorization", tokenStrings[0])
                                                 .send();
                 match req {
