@@ -83,8 +83,9 @@ pub fn get_rating_for_video(video_id_provided: i32, connection: &PgConnection) -
         }
 }
 
-pub fn get_rating_for_user(user_email_provided: String, connection: &PgConnection) -> QueryResult<i32> {
+pub fn get_rating_for_user(user_email_provided: String, video_id_provided: i32, connection: &PgConnection) -> QueryResult<i32> {
     match ratings.filter(rating_owner_email.eq(user_email_provided))
+        .filter(rating_video_id.eq(&video_id_provided))
         .select(rating)
         .first::<i32>(&*connection) {
             Ok(found_rating) => Ok(found_rating),

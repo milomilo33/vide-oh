@@ -14,7 +14,8 @@ pub fn create_routes() {
                     handler::delete_comment,
                     handler::report_comment,
                     handler::create_or_update_rating,
-                    handler::get_rating_for_video
+                    handler::get_rating_for_video,
+                    handler::get_rating_for_user
                     ],
         ).launch();
 }

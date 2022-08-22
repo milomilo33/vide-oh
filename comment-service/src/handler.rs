@@ -83,3 +83,14 @@ pub fn get_rating_for_video(video_id: i32, connection: DbConn, my_claims: MyJWTC
         .map(|rat| Json(rat))
         .map_err(|_| Status::NotFound)
 }
+
+#[get("/ratings/user/<owner_email>/<video_id>")]
+pub fn get_rating_for_user(owner_email: String, video_id: i32, connection: DbConn, my_claims: MyJWTClaims) -> Result<Json<i32>, Status> {
+    if !my_claims.email.eq(&owner_email) {
+        return Err(Status::Unauthorized);
+    }
+
+    repository::get_rating_for_user(owner_email, video_id, &connection)
+        .map(|rat| Json(rat))
+        .map_err(|_| Status::NotFound)
+}
