@@ -2,7 +2,7 @@
     <div>
         <h1>{{ video.title }}</h1>
         <br>
-        <video controls>
+        <video controls style="max-width: 50%;">
             <source :src="'/api/videos/video-stream/' + video.filename" type="video/mp4" />
         </video>
         <br>
@@ -241,7 +241,6 @@
                     })
                 .then((response) => {
                     this.comments = response.data;
-                    console.log(this.comments[0].posted_at);
                     this.comments = this.comments.sort(function(x, y){
                         return new Date(y.posted_at) - new Date(x.posted_at);
                     })

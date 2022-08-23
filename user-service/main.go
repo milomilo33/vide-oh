@@ -38,6 +38,16 @@ func main() {
 	user2.HashPassword(user2.Password)
 	database.Instance.Save(&user2)
 
+	user3 := &models.User{
+		Name:     "User2 Usersky2",
+		Email:    "user2@user2.com",
+		Password: "123",
+		Role:     models.RegisteredUser,
+		Blocked:  false,
+	}
+	user3.HashPassword(user3.Password)
+	database.Instance.Save(&user3)
+
 	// Initialize Router
 	router := initRouter()
 	router.Run(":8081")

@@ -5,7 +5,7 @@
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
     <b-collapse id="nav-collapse" is-nav>    
       <b-navbar-nav>
-
+        <b-nav-item href="/RegisteredPage/UploadVideo">Upload video</b-nav-item>
       </b-navbar-nav>  
 
       <!-- Right aligned nav items -->

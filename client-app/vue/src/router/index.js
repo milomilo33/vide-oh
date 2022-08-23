@@ -9,6 +9,7 @@ import RegisteredPage from '../views/RegisteredPage'
 import Register from '../components/Register'
 import SearchVideos from '../components/SearchVideos'
 import VideoView from '../components/VideoView'
+import UploadVideo from '../components/UploadVideo'
 
 Vue.use(VueRouter)
 
@@ -57,6 +58,14 @@ const routes = [
 				path: "VideoView",
 				name: "VideoViewRegisteredUser",
 				component: VideoView,
+				meta: {
+					roles: [Role.RegisteredUser]
+				},
+			},
+			{
+				path: "UploadVideo",
+				name: "UploadVideo",
+				component: UploadVideo,
 				meta: {
 					roles: [Role.RegisteredUser]
 				},
