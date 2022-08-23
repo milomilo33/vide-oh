@@ -6,6 +6,8 @@ import (
 	"user-service/models"
 	"user-service/utils"
 
+	"strings"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -100,4 +102,28 @@ func GetCurrentUser(context *gin.Context) {
 	database.Instance.Where("email = ?", claims.Email).First(&user)
 
 	context.JSON(http.StatusOK, user)
+}
+
+func ChangeName(context *gin.Context) {
+	_, claims := utils.GetTokenClaims(context)
+
+	var user models.User
+	if err := database.Instance.Where("email = ?", claims.Email).First(&user).Error; err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		context.Abort()
+		return
+	}
+
+	name := context.Query("name")
+	if strings.TrimSpace(name) == "" {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "white space string"})
+		context.Abort()
+		return
+	}
+
+	user.Name = name
+
+	database.Instance.Save(&user)
+
+	context.Status(http.StatusOK)
 }

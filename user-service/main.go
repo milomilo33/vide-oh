@@ -66,6 +66,7 @@ func initRouter() *gin.Engine {
 			secured.GET("/block/:email", controllers.BlockUser)                    // only admin
 			secured.GET("/user/:id", controllers.GetUserById)
 			secured.GET("/user/current", controllers.GetCurrentUser)
+			secured.GET("/user/change-name", controllers.ChangeName)
 		}
 	}
 	return router

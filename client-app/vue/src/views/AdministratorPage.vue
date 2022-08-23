@@ -16,7 +16,7 @@
           <template #button-content>
             <em>{{ current_name }} ({{ current_email }})</em>
           </template>
-          <b-dropdown-item href="#">Profile</b-dropdown-item>
+          <b-dropdown-item href="/AdministratorPage/Profile">Profile</b-dropdown-item>
           <b-dropdown-item href="/Logout">Log out</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>

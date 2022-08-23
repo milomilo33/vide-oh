@@ -13,6 +13,7 @@ import VideoView from '../components/VideoView'
 import UploadVideo from '../components/UploadVideo'
 import ReportedVideos from '../components/ReportedVideos'
 import ReportedComments from '../components/ReportedComments'
+import Profile from '../components/Profile'
 
 Vue.use(VueRouter)
 
@@ -73,6 +74,14 @@ const routes = [
 					roles: [Role.RegisteredUser]
 				},
 			},
+			{
+				path: "Profile",
+				name: "ProfileRegisteredUser",
+				component: Profile,
+				meta: {
+					roles: [Role.RegisteredUser]
+				},
+			},
 		],
 		meta: {
 			roles: [Role.RegisteredUser]
@@ -111,6 +120,14 @@ const routes = [
 				path: "ReportedComments",
 				name: "ReportedComments",
 				component: ReportedComments,
+				meta: {
+					roles: [Role.Administrator]
+				},
+			},
+			{
+				path: "Profile",
+				name: "ProfileAdministrator",
+				component: Profile,
 				meta: {
 					roles: [Role.Administrator]
 				},
