@@ -83,7 +83,11 @@
             },
 
             deleteVideo(id) {
-                this.axios.get(`/api/videos/delete-video/${id}`)
+                this.axios.get(`/api/videos/delete-video/${id}`, {
+                        headers: {
+                            Authorization: sessionStorage.getItem('token'),
+                        },
+                    })
                 .then((response) => {
                     this.showSuccessModal();
                 })
@@ -102,15 +106,15 @@
         },
 
         mounted() {
-            let role = JSON.parse(atob(sessionStorage.getItem('token').split('.')[1])).role;
-            if (role) {
-                this.role = role;
-            } else this.role = "UnregisteredUser";
-
-            let email = JSON.parse(atob(sessionStorage.getItem('token').split('.')[1])).email;
-            if (email) {
-                this.current_email = email;
-            } else this.current_email = "";
+            let tokenString = sessionStorage.getItem('token');
+            if (tokenString) {
+                let token = JSON.parse(atob(tokenString));
+                this.role = token.split('.')[1].role;
+                this.current_email = token.split('.')[1].email;
+            } else { 
+                this.role = "UnregisteredUser";
+                this.current_email = "";
+            }
 
             this.keyword = "";
 

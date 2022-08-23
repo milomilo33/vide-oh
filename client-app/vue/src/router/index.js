@@ -7,6 +7,7 @@ import UnregisteredPage from '../views/UnregisteredPage'
 
 import Register from '../components/Register'
 import SearchVideos from '../components/SearchVideos'
+import VideoView from '../components/VideoView'
 
 Vue.use(VueRouter)
 
@@ -30,7 +31,12 @@ const routes = [
 				path: "Register",
 				name: "Register",
 				component: Register
-			}
+			},
+			{
+				path: "VideoView",
+				name: "VideoViewUnregisteredUser",
+				component: VideoView
+			},
 		]
 	},
 	{

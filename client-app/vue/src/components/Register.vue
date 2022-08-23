@@ -82,11 +82,7 @@
                     return
                 }
 
-                this.axios.post(`/api/users/user/register`, body, {
-                        headers: {
-                            Authorization: sessionStorage.getItem('token'),
-                        },
-                    })
+                this.axios.post(`/api/users/user/register`, body)
                 .then(() => {
                     this.showSuccessModal();
                     this.$router.push("/Login");
