@@ -12,6 +12,7 @@ import SearchVideos from '../components/SearchVideos'
 import VideoView from '../components/VideoView'
 import UploadVideo from '../components/UploadVideo'
 import ReportedVideos from '../components/ReportedVideos'
+import ReportedComments from '../components/ReportedComments'
 
 Vue.use(VueRouter)
 
@@ -102,6 +103,14 @@ const routes = [
 				path: "ReportedVideos",
 				name: "ReportedVideos",
 				component: ReportedVideos,
+				meta: {
+					roles: [Role.Administrator]
+				},
+			},
+			{
+				path: "ReportedComments",
+				name: "ReportedComments",
+				component: ReportedComments,
 				meta: {
 					roles: [Role.Administrator]
 				},

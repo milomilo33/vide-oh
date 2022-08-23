@@ -6,6 +6,7 @@
     <b-collapse id="nav-collapse" is-nav>    
       <b-navbar-nav>
         <b-nav-item href="/AdministratorPage/ReportedVideos">Reported videos</b-nav-item>
+        <b-nav-item href="/AdministratorPage/ReportedComments">Reported comments</b-nav-item>
       </b-navbar-nav>  
 
       <!-- Right aligned nav items -->
