@@ -63,7 +63,7 @@ func initRouter() *gin.Engine {
 		{
 			secured.GET("/ping", controllers.Ping)
 			secured.GET("/user/all-registered", controllers.GetAllRegisteredUsers) // only admin
-			secured.GET("/block/:id", controllers.BlockUser)                       // only admin
+			secured.GET("/block/:email", controllers.BlockUser)                    // only admin
 			secured.GET("/user/:id", controllers.GetUserById)
 			secured.GET("/user/current", controllers.GetCurrentUser)
 		}

@@ -40,10 +40,10 @@ func BlockUser(context *gin.Context) {
 		return
 	}
 
-	userId := context.Param("id")
+	userEmail := context.Param("email")
 	var user models.User
 
-	if err := database.Instance.First(&user, userId).Error; err != nil {
+	if err := database.Instance.Where("email = ?", userEmail).First(&user).Error; err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		context.Abort()
 		return

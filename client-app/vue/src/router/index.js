@@ -5,11 +5,13 @@ import Login from '../views/Login'
 import Logout from '../views/Logout'
 import UnregisteredPage from '../views/UnregisteredPage'
 import RegisteredPage from '../views/RegisteredPage'
+import AdministratorPage from '../views/AdministratorPage'
 
 import Register from '../components/Register'
 import SearchVideos from '../components/SearchVideos'
 import VideoView from '../components/VideoView'
 import UploadVideo from '../components/UploadVideo'
+import ReportedVideos from '../components/ReportedVideos'
 
 Vue.use(VueRouter)
 
@@ -73,6 +75,40 @@ const routes = [
 		],
 		meta: {
 			roles: [Role.RegisteredUser]
+		},
+	},
+	{
+		path: "/AdministratorPage",
+		name: AdministratorPage,
+		component: AdministratorPage,
+		children: [
+			{
+				path: "",
+				name: "SearchVideosAdministrator",
+				component: SearchVideos,
+				meta: {
+					roles: [Role.Administrator]
+				},
+			},
+			{
+				path: "VideoView",
+				name: "VideoViewAdministrator",
+				component: VideoView,
+				meta: {
+					roles: [Role.Administrator]
+				},
+			},
+			{
+				path: "ReportedVideos",
+				name: "ReportedVideos",
+				component: ReportedVideos,
+				meta: {
+					roles: [Role.Administrator]
+				},
+			},
+		],
+		meta: {
+			roles: [Role.Administrator]
 		},
 	},
 	{
