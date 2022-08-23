@@ -6,6 +6,7 @@ import Logout from '../views/Logout'
 import UnregisteredPage from '../views/UnregisteredPage'
 
 import Register from '../components/Register'
+import SearchVideos from '../components/SearchVideos'
 
 Vue.use(VueRouter)
 
@@ -21,9 +22,14 @@ const routes = [
 		component: UnregisteredPage,
 		children: [
 			{
+				path: "",
+				name: "SearchVideosUnregisteredUser",
+				component: SearchVideos
+			},
+			{
 				path: "Register",
 				name: "Register",
-				component: Register,
+				component: Register
 			}
 		]
 	},

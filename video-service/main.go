@@ -38,7 +38,7 @@ func initRouter() *gin.Engine {
 	router.MaxMultipartMemory = 100 << 20
 	api := router.Group("/api/videos")
 	{
-		router.Static("/static", "./static")
+		api.Static("/static", "./static")
 		api.GET("/video-stream/:name", controllers.StreamVideo)
 		api.GET("/report-video/:id", controllers.ReportVideo)
 		api.GET("/search-videos", controllers.SearchVideos)
