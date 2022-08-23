@@ -4,6 +4,7 @@ import VueRouter from 'vue-router'
 import Login from '../views/Login'
 import Logout from '../views/Logout'
 import UnregisteredPage from '../views/UnregisteredPage'
+import RegisteredPage from '../views/RegisteredPage'
 
 import Register from '../components/Register'
 import SearchVideos from '../components/SearchVideos'
@@ -38,6 +39,32 @@ const routes = [
 				component: VideoView
 			},
 		]
+	},
+	{
+		path: "/RegisteredPage",
+		name: RegisteredPage,
+		component: RegisteredPage,
+		children: [
+			{
+				path: "",
+				name: "SearchVideosRegisteredUser",
+				component: SearchVideos,
+				meta: {
+					roles: [Role.RegisteredUser]
+				},
+			},
+			{
+				path: "VideoView",
+				name: "VideoViewRegisteredUser",
+				component: VideoView,
+				meta: {
+					roles: [Role.RegisteredUser]
+				},
+			},
+		],
+		meta: {
+			roles: [Role.RegisteredUser]
+		},
 	},
 	{
 		path: "/Login",

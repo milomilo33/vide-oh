@@ -10,25 +10,37 @@
         <p>{{ video.description }}</p>
         <p><strong>Uploader:</strong> {{ video.ownerEmail }}</p>
 
-        <div v-if="role !== 'UnregisteredUser'">
+        <b-container v-if="role !== 'UnregisteredUser'">
 
         <p v-if="total_rating !== 0">Rated {{ total_rating }}/5</p>
 
-        <span>
+        <b-row>
+            <b-col sm="3"></b-col>
+            <b-col>
             <b-form-input id="input_rating"
                 name="input_rating"
-                placeholder="1-5"
+                placeholder="Rating (1-5)"
                 class="mb-2 mr-sm-2 mb-sm-0"
                 type="number"
                 min="1"
                 max="5"
                 v-model="input_rating">
             </b-form-input>
+            </b-col>
+            <b-col>
             <b-button @click="rateVideo" variant="primary">Rate</b-button>
-            <small v-if="your_rating !== 0">Your current rating is {{ your_rating }}</small>
-        </span>
+            </b-col>
+            <b-col>
+            <small v-if="your_rating !== 0"> Your current rating is {{ your_rating }}</small>
+            </b-col>
+            <b-col sm="3"></b-col>
+        </b-row>
+        <br>
+        <br>
 
-        <b-button @click="reportVideo" variant="primary">Report video</b-button>
+        <b-button @click="reportVideo" variant="warning">Report video</b-button>
+        <br>
+        <br>
 
         <h2>Comments</h2>
 
@@ -39,7 +51,9 @@
             rows="3"
             max-rows="6"
         ></b-form-textarea>
+        <br>
         <b-button @click="postComment" variant="primary">Post new comment</b-button>
+        <br>
         <br>
 
         <div v-for="comment in comments" :key="comment.id">
@@ -52,7 +66,7 @@
             </b-card>
         </div>
 
-        </div>
+        </b-container>
 
         <b-modal ref="success-modal" hide-footer title="Success">
             <div class="d-block text-center">
@@ -81,7 +95,7 @@
                 comments: [],
                 total_rating: 0,
                 your_rating: 0,
-                input_rating: 0,
+                input_rating: "",
                 success_message: "",
                 error_message: "",
             };
@@ -91,7 +105,7 @@
             rateVideo() {
                 let body = {
                     rating_owner_email: this.current_email,
-                    rating: this.input_rating,
+                    rating: Number(this.input_rating),
                     rating_video_id: this.video.ID,
                 };
 
@@ -102,6 +116,8 @@
                     })
                 .then((response) => {
                     this.success_message = "Successfully rated video!";
+                    this.getTotalRating();
+                    this.getYourRating();
                     this.showSuccessModal();
                 })
                 .catch(error => {
@@ -142,6 +158,7 @@
                     })
                 .then((response) => {
                     this.success_message = "Successfully posted a new comment!";
+                    this.getComments();
                     this.showSuccessModal();
                 })
                 .catch(error => {
@@ -159,6 +176,7 @@
                     })
                 .then((response) => {
                     this.success_message = "Successfully deleted comment!";
+                    this.getComments();
                     this.showSuccessModal();
                 })
                 .catch(error => {
@@ -223,6 +241,10 @@
                     })
                 .then((response) => {
                     this.comments = response.data;
+                    console.log(this.comments[0].posted_at);
+                    this.comments = this.comments.sort(function(x, y){
+                        return new Date(y.posted_at) - new Date(x.posted_at);
+                    })
                 })
                 .catch(error => {
                     this.comments = [];
@@ -250,9 +272,9 @@
         mounted() {
             let tokenString = sessionStorage.getItem('token');
             if (tokenString) {
-                let token = JSON.parse(atob(tokenString));
-                this.role = token.split('.')[1].role;
-                this.current_email = token.split('.')[1].email;
+                let token = JSON.parse(atob(tokenString.split('.')[1]));
+                this.role = token.role;
+                this.current_email = token.email;
             } else { 
                 this.role = "UnregisteredUser";
                 this.current_email = "";

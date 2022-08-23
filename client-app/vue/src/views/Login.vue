@@ -72,7 +72,7 @@ export default {
         this.$router.push("AdministratorPage");
       }
       if (userRole == "RegisteredUser") {
-        this.$router.push("RegisteredUserPage");
+        this.$router.push("RegisteredPage");
       }
     },
   },

@@ -83,7 +83,7 @@
             },
 
             deleteVideo(id) {
-                this.axios.get(`/api/videos/delete-video/${id}`, {
+                this.axios.get(`/api/videos/secured/delete-video/${id}`, {
                         headers: {
                             Authorization: sessionStorage.getItem('token'),
                         },
@@ -108,9 +108,9 @@
         mounted() {
             let tokenString = sessionStorage.getItem('token');
             if (tokenString) {
-                let token = JSON.parse(atob(tokenString));
-                this.role = token.split('.')[1].role;
-                this.current_email = token.split('.')[1].email;
+                let token = JSON.parse(atob(tokenString.split('.')[1]));
+                this.role = token.role;
+                this.current_email = token.email;
             } else { 
                 this.role = "UnregisteredUser";
                 this.current_email = "";
