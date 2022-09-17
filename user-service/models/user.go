@@ -12,6 +12,7 @@ type UserRole int
 const (
 	Administrator  UserRole = 0
 	RegisteredUser UserRole = 1
+	SupportUser    UserRole = 2
 )
 
 func (e UserRole) String() string {
@@ -20,6 +21,8 @@ func (e UserRole) String() string {
 		return "Administrator"
 	case RegisteredUser:
 		return "RegisteredUser"
+	case SupportUser:
+		return "SupportUser"
 	default:
 		return fmt.Sprintf("%d", int(e))
 	}
