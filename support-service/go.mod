@@ -3,7 +3,9 @@ module support-service
 go 1.19
 
 require (
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gin-gonic/gin v1.8.1
+	gopkg.in/olahol/melody.v1 v1.0.0-20170518105555-d52139073376
 	gorm.io/datatypes v1.0.7
 	gorm.io/driver/postgres v1.3.9
 	gorm.io/gorm v1.23.9
@@ -16,6 +18,7 @@ require (
 	github.com/go-playground/validator/v10 v10.10.0 // indirect
 	github.com/go-sql-driver/mysql v1.6.0 // indirect
 	github.com/goccy/go-json v0.9.7 // indirect
+	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
 	github.com/jackc/pgconn v1.12.1 // indirect
 	github.com/jackc/pgio v1.0.0 // indirect

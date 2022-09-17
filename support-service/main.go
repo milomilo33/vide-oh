@@ -1,12 +1,17 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"strings"
 
+	"support-service/controllers"
 	"support-service/database"
 	"support-service/middleware"
+	"support-service/utils"
 
 	"github.com/gin-gonic/gin"
+	"gopkg.in/olahol/melody.v1"
 )
 
 func main() {
@@ -37,10 +42,43 @@ func CORS() gin.HandlerFunc {
 
 func initRouter() *gin.Engine {
 	router := gin.Default()
+	m := melody.New()
 	router.Use(CORS())
 	api := router.Group("/api/messages").Use(middleware.Auth())
 	{
-		api.GET("/video-stream/:name")
+		api.GET("/:email/ws", func(c *gin.Context) {
+			email := c.Param("email")
+			_, claims := utils.GetTokenClaims(c)
+			if claims.Role != "SupportUser" && !(claims.Role == "RegisteredUser" && claims.Email == email) {
+				c.JSON(401, gin.H{"error": "unauthorized role"})
+				c.Abort()
+				return
+			}
+
+			m.HandleRequest(c.Writer, c.Request)
+		})
+
+		m.HandleMessage(func(s *melody.Session, msg []byte) {
+			splitPath := strings.Split(s.Request.URL.Path, "/")
+			email := splitPath[len(splitPath)-2]
+			_, claims := utils.GetTokenClaimsMelody(s)
+
+			message, err := controllers.AddMessage(string(msg), email, claims)
+			if err != nil {
+				return
+			}
+
+			messageJSON, err := json.Marshal(message)
+			if err != nil {
+				return
+			}
+
+			m.BroadcastFilter(messageJSON, func(q *melody.Session) bool {
+				return q.Request.URL.Path == s.Request.URL.Path
+			})
+		})
+
+		api.GET("/:email/all", controllers.GetAllMessagesForUser)
 	}
 	return router
 }

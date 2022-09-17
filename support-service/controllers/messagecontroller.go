@@ -1,27 +1,49 @@
 package controllers
 
 import (
+	"errors"
+	"net/http"
+	"support-service/database"
+	"support-service/models"
+	"support-service/utils"
+	"time"
+
 	"github.com/gin-gonic/gin"
+	"gorm.io/datatypes"
 )
 
-func RegisterUser(context *gin.Context) {
-	// var user models.User
-	// if err := context.ShouldBindJSON(&user); err != nil {
-	// 	context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	// 	context.Abort()
-	// 	return
-	// }
-	// if err := user.HashPassword(user.Password); err != nil {
-	// 	context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-	// 	context.Abort()
-	// 	return
-	// }
-	// user.Role = models.RegisteredUser
-	// record := database.Instance.Create(&user)
-	// if record.Error != nil {
-	// 	context.JSON(http.StatusInternalServerError, gin.H{"error": record.Error.Error()})
-	// 	context.Abort()
-	// 	return
-	// }
-	// context.JSON(http.StatusCreated, gin.H{"userId": user.ID, "email": user.Email})
+func AddMessage(msg string, email string, jwtClaims utils.JWTClaim) (message *models.Message, err error) {
+	message = &models.Message{
+		Content:    msg,
+		OwnerEmail: email,
+		SentByUser: jwtClaims.Role == "RegisteredUser",
+		Date:       datatypes.Date(time.Now()),
+	}
+	record := database.Instance.Save(&message)
+
+	if record.Error != nil {
+		err = errors.New("DB error")
+	}
+
+	return message, err
+}
+
+func GetAllMessagesForUser(c *gin.Context) {
+	email := c.Param("email")
+	_, claims := utils.GetTokenClaims(c)
+	if claims.Role != "SupportUser" && !(claims.Role == "RegisteredUser" && claims.Email == email) {
+		c.JSON(401, gin.H{"error": "unauthorized role"})
+		c.Abort()
+		return
+	}
+
+	var messages []models.Message
+
+	if err := database.Instance.Where("owner_email = ?", email).Find(&messages).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		c.Abort()
+		return
+	}
+
+	c.JSON(http.StatusOK, messages)
 }
