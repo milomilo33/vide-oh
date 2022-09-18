@@ -40,15 +40,27 @@ func CORS() gin.HandlerFunc {
 	}
 }
 
+type SocketMessage struct {
+	Message string `json:"message"`
+	Token   string `json:"token"`
+}
+
 func initRouter() *gin.Engine {
 	router := gin.Default()
 	m := melody.New()
 	router.Use(CORS())
-	api := router.Group("/api/messages").Use(middleware.Auth())
+	api := router.Group("/api/messages")
 	{
 		api.GET("/:email/ws", func(c *gin.Context) {
+			token, _ := c.GetQuery("token")
+			if !middleware.AuthenticateToken(token) {
+				c.JSON(401, gin.H{"error": "unauthorized"})
+				c.Abort()
+				return
+			}
+
 			email := c.Param("email")
-			_, claims := utils.GetTokenClaims(c)
+			_, claims := utils.GetTokenClaimsFromTokenString(token)
 			if claims.Role != "SupportUser" && !(claims.Role == "RegisteredUser" && claims.Email == email) {
 				c.JSON(401, gin.H{"error": "unauthorized role"})
 				c.Abort()
@@ -61,15 +73,24 @@ func initRouter() *gin.Engine {
 		m.HandleMessage(func(s *melody.Session, msg []byte) {
 			splitPath := strings.Split(s.Request.URL.Path, "/")
 			email := splitPath[len(splitPath)-2]
-			_, claims := utils.GetTokenClaimsMelody(s)
-
-			message, err := controllers.AddMessage(string(msg), email, claims)
+			var socketMessage SocketMessage
+			err := json.Unmarshal(msg, &socketMessage)
 			if err != nil {
+				fmt.Println("error: ", err)
+				return
+			}
+			fmt.Println(socketMessage)
+			_, claims := utils.GetTokenClaimsFromTokenString(socketMessage.Token)
+
+			message, err := controllers.AddMessage(socketMessage.Message, email, claims)
+			if err != nil {
+				fmt.Println("error: ", err)
 				return
 			}
 
 			messageJSON, err := json.Marshal(message)
 			if err != nil {
+				fmt.Println("error: ", err)
 				return
 			}
 
@@ -78,7 +99,11 @@ func initRouter() *gin.Engine {
 			})
 		})
 
-		api.GET("/:email/all", controllers.GetAllMessagesForUser)
+		secured := api.Group("/secured").Use(middleware.Auth())
+		{
+			secured.GET("/:email/all", controllers.GetAllMessagesForUser)
+			secured.GET("/user-emails", controllers.GetAllUserEmailsWithMessages)
+		}
 	}
 	return router
 }

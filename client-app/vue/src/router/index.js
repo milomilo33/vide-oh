@@ -6,6 +6,7 @@ import Logout from '../views/Logout'
 import UnregisteredPage from '../views/UnregisteredPage'
 import RegisteredPage from '../views/RegisteredPage'
 import AdministratorPage from '../views/AdministratorPage'
+import SupportPage from '../views/SupportPage'
 
 import Register from '../components/Register'
 import SearchVideos from '../components/SearchVideos'
@@ -14,12 +15,15 @@ import UploadVideo from '../components/UploadVideo'
 import ReportedVideos from '../components/ReportedVideos'
 import ReportedComments from '../components/ReportedComments'
 import Profile from '../components/Profile'
+import Messages from '../components/Messages'
+import SupportMessages from '../components/SupportMessages'
 
 Vue.use(VueRouter)
 
 const Role = {
 	Administrator: 'Administrator',
-	RegisteredUser: 'RegisteredUser'
+	RegisteredUser: 'RegisteredUser',
+	SupportUser: 'SupportUser'
 }
 
 const routes = [
@@ -82,6 +86,14 @@ const routes = [
 					roles: [Role.RegisteredUser]
 				},
 			},
+			{
+				path: "Messages",
+				name: "RegisteredUserMessages",
+				component: Messages,
+				meta: {
+					roles: [Role.RegisteredUser]
+				},
+			},
 		],
 		meta: {
 			roles: [Role.RegisteredUser]
@@ -135,6 +147,42 @@ const routes = [
 		],
 		meta: {
 			roles: [Role.Administrator]
+		},
+	},
+	{
+		path: "/SupportPage",
+		name: SupportPage,
+		component: SupportPage,
+		children: [
+			{
+				path: "SupportMessages",
+				name: "SupportUserSupportMessages",
+				component: SupportMessages,
+				children: [
+					{
+						path: "Messages",
+						name: "SupportUserMessages",
+						component: Messages,
+						meta: {
+							roles: [Role.SupportUser]
+						},
+					},
+				],
+				meta: {
+					roles: [Role.SupportUser]
+				},
+			},
+			{
+				path: "Profile",
+				name: "ProfileSupportUser",
+				component: Profile,
+				meta: {
+					roles: [Role.SupportUser]
+				},
+			},
+		],
+		meta: {
+			roles: [Role.SupportUser]
 		},
 	},
 	{

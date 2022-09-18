@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/datatypes"
 )
 
 func AddMessage(msg string, email string, jwtClaims utils.JWTClaim) (message *models.Message, err error) {
@@ -17,7 +16,7 @@ func AddMessage(msg string, email string, jwtClaims utils.JWTClaim) (message *mo
 		Content:    msg,
 		OwnerEmail: email,
 		SentByUser: jwtClaims.Role == "RegisteredUser",
-		Date:       datatypes.Date(time.Now()),
+		Date:       time.Now(),
 	}
 	record := database.Instance.Save(&message)
 
@@ -46,4 +45,23 @@ func GetAllMessagesForUser(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, messages)
+}
+
+func GetAllUserEmailsWithMessages(c *gin.Context) {
+	_, claims := utils.GetTokenClaims(c)
+	if claims.Role != "SupportUser" {
+		c.JSON(401, gin.H{"error": "unauthorized role"})
+		c.Abort()
+		return
+	}
+
+	var userEmails []string
+
+	if err := database.Instance.Model(&models.Message{}).Distinct("owner_email").Find(&userEmails).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		c.Abort()
+		return
+	}
+
+	c.JSON(http.StatusOK, userEmails)
 }

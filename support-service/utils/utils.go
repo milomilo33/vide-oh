@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"gopkg.in/olahol/melody.v1"
 
 	"github.com/dgrijalva/jwt-go"
 )
@@ -29,8 +28,18 @@ func GetTokenClaims(context *gin.Context) (err error, jwtClaims JWTClaim) {
 	return
 }
 
-func GetTokenClaimsMelody(s *melody.Session) (err error, jwtClaims JWTClaim) {
-	tokenString := s.Request.Header["Authorization"][0]
+// func GetTokenClaimsMelody(s *melody.Session) (err error, jwtClaims JWTClaim) {
+// 	tokenString := s.Request.Header["Authorization"][0]
+// 	parts := strings.Split(tokenString, ".")
+// 	bytes, _ := base64.RawURLEncoding.DecodeString(parts[1])
+// 	err = json.Unmarshal(bytes, &jwtClaims)
+// 	if err != nil {
+// 		fmt.Println("error: ", err)
+// 	}
+// 	return
+// }
+
+func GetTokenClaimsFromTokenString(tokenString string) (err error, jwtClaims JWTClaim) {
 	parts := strings.Split(tokenString, ".")
 	bytes, _ := base64.RawURLEncoding.DecodeString(parts[1])
 	err = json.Unmarshal(bytes, &jwtClaims)

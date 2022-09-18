@@ -39,3 +39,25 @@ func Auth() gin.HandlerFunc {
 		context.Next()
 	}
 }
+
+func AuthenticateToken(token string) bool {
+	requestURL := "http://localhost:8081/api/users/secured/ping"
+	req, err := http.NewRequest(http.MethodGet, requestURL, nil)
+	if err != nil {
+		fmt.Printf("auth client: could not create request: %s\n", err)
+		return false
+	}
+	req.Header.Add("Authorization", token)
+
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		fmt.Printf("auth client: error making http request: %s\n", err)
+		return false
+	}
+
+	if res.StatusCode != http.StatusOK {
+		return false
+	}
+
+	return true
+}

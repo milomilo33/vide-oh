@@ -74,6 +74,9 @@ export default {
       if (userRole == "RegisteredUser") {
         this.$router.push("RegisteredPage");
       }
+      if (userRole == "SupportUser") {
+        this.$router.push("SupportPage");
+      }
     },
   },
 }
