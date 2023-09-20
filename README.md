@@ -38,8 +38,9 @@ Administrator:
 The system relies on a microservice architecture.
 The components of the system are as follows:
 
-- User microservice (authentication, authorization, user addition and modification, user blocking, etc.). Technologies: Go and PostgreSQL.
-- Video microservice (CRUD operations on videos, video streaming, video search, etc.). Technologies: Go and PostgreSQL (for video metadata).
-- Comments and ratings microservice. Technologies: Rust and PostgreSQL.
-- Central client-side frontend application that supports the functionalities of all microservices. Technologies: Vue.js.
+- User microservice (authentication, authorization, user addition and modification, user blocking, etc.). Technologies: _Go_ and _PostgreSQL_.
+- Video microservice (CRUD operations on videos, video streaming, video search, etc.). Technologies: _Go_ and _PostgreSQL_ (for video metadata).
+- Comments and ratings microservice. Technologies: _Rust_ and _PostgreSQL_.
+- Central client-side frontend application that supports the functionalities of all microservices. Technologies: _Vue.js_.
 - Another microservice that introduces a new type of user (technical support) with whom users can chat if they need assistance (implemented using WebSockets).
+- _nginx_-based API Gateway.
