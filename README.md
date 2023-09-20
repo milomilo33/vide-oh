@@ -44,5 +44,8 @@ The components of the system are as follows:
 - Central client-side frontend application that supports the functionalities of all microservices. Technologies: _Vue.js_.
 - Another microservice that introduces a new type of user (technical support) with whom users can chat if they need assistance (implemented using WebSockets).
 - _nginx_-based API Gateway.
-- 
-![image](https://github.com/milomilo33/vide-oh/assets/29868001/611fe509-4d3c-4ba2-9342-1a2d0db18d95)
+
+<p align="center">
+  <img src="https://github.com/milomilo33/vide-oh/assets/29868001/780d324c-9054-4299-95f6-e2ee83a62b79" alt="animated" />
+</p>
+
