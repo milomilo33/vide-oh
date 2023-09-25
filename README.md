@@ -3,6 +3,9 @@ Bachelor's thesis project: Microservice-based platform for watching and sharing 
 
 ![image](https://github.com/milomilo33/vide-oh/assets/29868001/9e4af3ab-1eac-49ed-81dc-9bc6e7a4f7c0)
 
+![image](https://github.com/milomilo33/vide-oh/assets/29868001/c7bfd52a-779e-4963-be78-278b2cfbde25)
+
+
 # Features
 The system recognizes three basic types of users:
 - Unregistered user
@@ -14,7 +17,7 @@ Below are the functionalities that each type of user has access to.
 Unregistered user:
 - Registration
 - Login
-- Search for existing videos (with thumbnail display)
+- Search for existing videos (with thumbnails that are automatically extracted when videos are uploaded (courtesy of _FFmpeg_))
 - Watch videos (the videos will be streamed, not downloaded, and viewed within this application), control playback speed
 - Download videos
 
