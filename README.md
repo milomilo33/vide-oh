@@ -7,7 +7,7 @@ Bachelor's thesis project: Microservice-based platform for watching (streaming) 
 
 
 # Features
-The system recognizes three basic types of users:
+The system recognizes 3 basic types of users:
 - Unregistered user
 - Registered user
 - Administrator
